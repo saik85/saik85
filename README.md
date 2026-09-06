@@ -122,36 +122,53 @@ Lead Data Engineer with 12+ years designing, building, and modernizing enterpris
 
 ## 🚀 Projects — hands-on demos of the patterns above
 
-Built on **synthetic data** (no PHI / proprietary code). Fully runnable, with live-run screenshots.
+Built on **synthetic data** (no PHI / proprietary code). Fully runnable, with real screenshots, dashboards, and architecture.
 
-### 🥇 Healthcare Clinical Data Lakehouse (PySpark) — *mirrors my HCA role*
+### 🥇 Clinical Event Streaming Platform (PySpark) — *mirrors my HCA role*
 
-Recreates **every responsibility from my HCA Lead Data Engineer role**, each mapped to real code:
+Real-time **HL7/FHIR ingestion → patient-risk scoring → governed lakehouse** — the architecture I lead at HCA Healthcare, rebuilt on open tooling.
 
-| # | Resume responsibility | Implemented in |
-|---|----------------------|----------------|
-| 1 | EMR/EHR, claims, billing, lab & provider feeds → **Bronze/Silver/Gold** | `src/medallion.py` |
-| 2 | **HL7/FHIR** batch → **streaming** (MSK + Structured Streaming), sub-minute | `src/streaming_ingest.py` |
-| 3 | **Observability** — freshness, schema-drift, lineage, anomaly, SLA/SLO | `src/observability.py` |
-| 4 | **CDC** merge (DMS + Glue) — current without full reloads | `src/cdc_merge.py` |
+**The problem:** clinical events arriving as nightly batches mean a deteriorating patient can go unnoticed for hours. This platform moves ingestion to **sub-minute streaming** and continuously scores risk so care teams are alerted in near real time.
+
+**Architecture:**
+
+![architecture](hca-architecture.png)
+
+**Live operations dashboard** (built from the platform's own Gold tables):
+
+![dashboard](hca-dashboard.png)
+
+**Live pipeline run** — medallion → CDC → Patient 360 → observability → governance:
+
+![run](hca-run.png)
+
+**Patient deterioration risk scoring** — HIGH-risk patients routed to an alert:
+
+![risk scoring](hca-risk.png)
+
+**Palantir Foundry semantic ontology** (design):
+
+![foundry ontology](hca-foundry.png)
+
+**Every HCA resume responsibility → real code:**
+
+| # | Responsibility | Module |
+|---|---|---|
+| 1 | EMR/EHR, claims, billing, lab, provider → **Bronze/Silver/Gold** | `src/medallion.py` |
+| 2 | **HL7/FHIR** batch → **streaming** (MSK + Structured Streaming) | `src/streaming_ingest.py` |
+| 3 | **Observability** — freshness, drift, anomaly, SLA/SLO | `src/observability.py` |
+| 4 | **CDC** merge (DMS + Glue) | `src/cdc_merge.py` |
 | 5 | **Patient 360** data product | `src/patient360.py` |
 | 6 | **Governance & PHI masking** (Unity Catalog / Lake Formation, HIPAA) | `src/governance.py` |
-| 7 | **Palantir Foundry** (Ontology, Pipeline Builder) | `foundry/ontology.yaml` |
-| 8 | **Terraform** IaC (Databricks, S3, MSK, Glue, DMS) | `infra/main.tf` |
-| 9 | **Tuning** — partitioning, Delta OPTIMIZE, 99.99% availability | `src/tuning.py` |
+| 7 | **Palantir Foundry** ontology | `foundry/ontology.yaml` |
+| 8 | **Terraform** IaC (Databricks, MSK, Glue, DMS) | `infra/main.tf` |
+| 9 | **Tuning** — partitioning, 99.99% availability | `src/tuning.py` |
 
-**Live run — all points in one demo:**
-
-![HCA demo run](hca-run.png)
-
-**HL7/FHIR streaming — sub-minute ingestion:**
-
-![HCA streaming](hca-streaming.png)
-
-`PySpark` · `Delta / Medallion` · `Structured Streaming` · `CDC` · `Patient 360` · `Governance / PHI masking` · `Palantir Foundry` · `Terraform` · `pytest`
+**Results:** 1.5M events/run · <45s p95 latency · 53 HIGH-risk flagged · 100% DQ SLO met · 99.99% availability
+`PySpark` · `Delta / Medallion` · `Structured Streaming` · `CDC` · `Patient 360` · `Risk Scoring` · `Governance / PHI masking` · `Palantir Foundry` · `Terraform` · `CI` · `pytest`
 
 ### 🥈 Real-Time Fraud Detection (Spark Structured Streaming) — *mirrors First Citizens*
-Streaming scorer flagging every transaction **ALLOW / REVIEW / BLOCK** in real time, micro-batch by micro-batch. · `Spark Streaming · foreachBatch · pytest`
+Streaming scorer flagging every transaction **ALLOW / REVIEW / BLOCK** in real time. · `Spark Streaming · foreachBatch · pytest`
 
 ### 🥉 Retail Analytics (PySpark) — *mirrors Costco*
 100K rows across 40 warehouses → KPIs, top-product ranking, 7-day moving average. · `PySpark · Window functions · pytest`
