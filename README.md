@@ -122,7 +122,7 @@ Lead Data Engineer with 12+ years designing, building, and modernizing enterpris
 
 ## 🚀 Projects — hands-on demos of the patterns above
 
-Built on **synthetic data** (no PHI / proprietary code). Fully runnable, with real screenshots, dashboards, and architecture.
+Built on **synthetic data** (no PHI / proprietary code). Fully runnable, with real architecture diagrams, dashboards, and screenshots.
 
 ### 🥇 Clinical Event Streaming Platform (PySpark) — *mirrors my HCA role*
 
@@ -130,17 +130,11 @@ Real-time **HL7/FHIR ingestion → patient-risk scoring → governed lakehouse**
 
 **The problem:** clinical events arriving as nightly batches mean a deteriorating patient can go unnoticed for hours. This platform moves ingestion to **sub-minute streaming** and continuously scores risk so care teams are alerted in near real time.
 
-**Architecture:**
-
 ![architecture](hca-architecture.png)
 
 **Live operations dashboard** (built from the platform's own Gold tables):
 
 ![dashboard](hca-dashboard.png)
-
-**Live pipeline run** — medallion → CDC → Patient 360 → observability → governance:
-
-![run](hca-run.png)
 
 **Patient deterioration risk scoring** — HIGH-risk patients routed to an alert:
 
@@ -150,34 +144,70 @@ Real-time **HL7/FHIR ingestion → patient-risk scoring → governed lakehouse**
 
 ![foundry ontology](hca-foundry.png)
 
-**Every HCA resume responsibility → real code:**
+**Every HCA responsibility → real code:** Bronze/Silver/Gold (`medallion.py`) · HL7/FHIR streaming (`streaming_ingest.py`) · observability (`observability.py`) · CDC merge (`cdc_merge.py`) · Patient 360 (`patient360.py`) · governance/PHI masking (`governance.py`) · Foundry ontology (`foundry/ontology.yaml`) · Terraform (`infra/main.tf`) · tuning (`tuning.py`)
 
-| # | Responsibility | Module |
-|---|---|---|
-| 1 | EMR/EHR, claims, billing, lab, provider → **Bronze/Silver/Gold** | `src/medallion.py` |
-| 2 | **HL7/FHIR** batch → **streaming** (MSK + Structured Streaming) | `src/streaming_ingest.py` |
-| 3 | **Observability** — freshness, drift, anomaly, SLA/SLO | `src/observability.py` |
-| 4 | **CDC** merge (DMS + Glue) | `src/cdc_merge.py` |
-| 5 | **Patient 360** data product | `src/patient360.py` |
-| 6 | **Governance & PHI masking** (Unity Catalog / Lake Formation, HIPAA) | `src/governance.py` |
-| 7 | **Palantir Foundry** ontology | `foundry/ontology.yaml` |
-| 8 | **Terraform** IaC (Databricks, MSK, Glue, DMS) | `infra/main.tf` |
-| 9 | **Tuning** — partitioning, 99.99% availability | `src/tuning.py` |
-
-**Results:** 1.5M events/run · <45s p95 latency · 53 HIGH-risk flagged · 100% DQ SLO met · 99.99% availability
+**Results:** 1.5M events/run · <45s p95 latency · 53 HIGH-risk flagged · 100% DQ SLO · 99.99% availability
 `PySpark` · `Delta / Medallion` · `Structured Streaming` · `CDC` · `Patient 360` · `Risk Scoring` · `Governance / PHI masking` · `Palantir Foundry` · `Terraform` · `CI` · `pytest`
 
-### 🥈 Real-Time Fraud Detection (Spark Structured Streaming) — *mirrors First Citizens*
-Streaming scorer flagging every transaction **ALLOW / REVIEW / BLOCK** in real time. · `Spark Streaming · foreachBatch · pytest`
+---
+
+### 🥈 Real-Time Fraud Detection (Spark Structured Streaming) — *mirrors First Citizens Bank*
+
+Real-time scorer that flags every transaction **ALLOW / REVIEW / BLOCK** within a 2-minute SLA, unifying ACH/wire/card/digital activity into one event stream.
+
+![architecture](fraud-architecture.png)
+
+**Flagged transactions by decision:**
+
+![results](fraud-results.png)
+
+**Results:** 150M+ events/month · 2-min decision SLA · exactly-once writes · 99.95% availability
+`Spark Structured Streaming` · `Kinesis` · `PySpark` · `EMR` · `Snowflake` · `Apache Iceberg` · `CDC` · `pytest`
+
+---
 
 ### 🥉 Retail Analytics (PySpark) — *mirrors Costco*
-100K rows across 40 warehouses → KPIs, top-product ranking, 7-day moving average. · `PySpark · Window functions · pytest`
+
+Consolidates POS/inventory from 800+ warehouses into KPIs, top-product ranking, and demand smoothing — the GCP analytics platform serving merchandising and supply-chain teams.
+
+![architecture](retail-architecture.png)
+
+**Category revenue share + 7-day moving average:**
+
+![results](retail-results.png)
+
+**Results:** 50M daily transactions · self-service via Looker · **−22% stockouts**
+`PySpark` · `BigQuery` · `Pub/Sub` · `Dataflow` · `Looker (LookML)` · `Airflow` · `Window functions` · `pytest`
+
+---
 
 ### 🏅 Insurance Reconciliation (PySpark) — *mirrors Brown & Brown*
-Reconciles policy ↔ billing ↔ claims and detects **premium leakage**. · `PySpark · multi-source joins · pytest`
 
-### 🏅 Telecom Billing & Churn Warehouse (SQL) — *mirrors Cox*
-Star schema → **ARPU, churn & retention** marts. · `SQL · Star Schema · Dimensional Modeling`
+Reconciles **policy ↔ billing ↔ claims** across three source systems and automatically detects **premium leakage** the business was missing.
+
+![architecture](insurance-architecture.png)
+
+**Premium leakage detected by line of business:**
+
+![results](insurance-results.png)
+
+**Results:** millions of transactions/day · surfaced **~$269K premium leakage** in the demo run
+`PySpark` · `Informatica PowerCenter` · `SSIS` · `T-SQL` · `Power BI` · `Azure (ADF, SQL DB, Blob)` · `pytest`
+
+---
+
+### 🏅 Telecom Billing & Churn Warehouse (SQL) — *mirrors Cox Communications*
+
+A **star-schema warehouse** turning CDR + billing into **ARPU, churn & retention** marts for customer-care and marketing.
+
+![architecture](telecom-architecture.png)
+
+**Monthly churn trend + ARPU by plan:**
+
+![results](telecom-results.png)
+
+**Results:** tens of millions of CDR events/month · SCD Type 1 & 2 history · churn/ARPU/retention reporting
+`SQL` · `Oracle 11g` · `Star / Snowflake Schema` · `SCD 1 & 2` · `Informatica` · `SSIS` · `PL/SQL`
 
 
 <hr/>
