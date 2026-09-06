@@ -142,11 +142,11 @@ Recreates **every responsibility from my HCA Lead Data Engineer role**, each map
 
 **Live run — all points in one demo:**
 
-![HCA demo run](assets/hca-run.png)
+![HCA demo run](hca-run.png)
 
 **HL7/FHIR streaming — sub-minute ingestion:**
 
-![HCA streaming](assets/hca-streaming.png)
+![HCA streaming](hca-streaming.png)
 
 `PySpark` · `Delta / Medallion` · `Structured Streaming` · `CDC` · `Patient 360` · `Governance / PHI masking` · `Palantir Foundry` · `Terraform` · `pytest`
 
