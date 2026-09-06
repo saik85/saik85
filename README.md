@@ -122,13 +122,46 @@ Lead Data Engineer with 12+ years designing, building, and modernizing enterpris
 
 ## 🚀 Projects — hands-on demos of the patterns above
 
-Built on **synthetic data** (no PHI / proprietary code). Each is fully runnable with a README and live-run screenshots.
+Built on **synthetic data** (no PHI / proprietary code). Fully runnable, with live-run screenshots.
 
-- **Healthcare Clinical Lakehouse (PySpark)** — medallion Bronze → Silver → Gold with data-quality gates. *Mirrors HCA.* · `PySpark · Delta / Medallion · Data Quality · pytest`
-- **Real-Time Fraud Detection (Spark Structured Streaming)** — streaming ALLOW / REVIEW / BLOCK scoring, micro-batch by micro-batch. *Mirrors First Citizens.* · `Spark Structured Streaming · foreachBatch · pytest`
-- **Retail Analytics (PySpark)** — 100K rows across 40 warehouses → KPIs, top-product ranking, 7-day moving average. *Mirrors Costco.* · `PySpark · Window functions · KPIs · pytest`
-- **Insurance Reconciliation (PySpark)** — policy ↔ billing ↔ claims join detecting premium leakage. *Mirrors Brown & Brown.* · `PySpark · multi-source joins · pytest`
-- **Telecom Billing & Churn Warehouse (SQL)** — star schema → ARPU, churn & retention marts. *Mirrors Cox.* · `SQL · Star Schema · Dimensional Modeling`
+### 🥇 Healthcare Clinical Data Lakehouse (PySpark) — *mirrors my HCA role*
+
+Recreates **every responsibility from my HCA Lead Data Engineer role**, each mapped to real code:
+
+| # | Resume responsibility | Implemented in |
+|---|----------------------|----------------|
+| 1 | EMR/EHR, claims, billing, lab & provider feeds → **Bronze/Silver/Gold** | `src/medallion.py` |
+| 2 | **HL7/FHIR** batch → **streaming** (MSK + Structured Streaming), sub-minute | `src/streaming_ingest.py` |
+| 3 | **Observability** — freshness, schema-drift, lineage, anomaly, SLA/SLO | `src/observability.py` |
+| 4 | **CDC** merge (DMS + Glue) — current without full reloads | `src/cdc_merge.py` |
+| 5 | **Patient 360** data product | `src/patient360.py` |
+| 6 | **Governance & PHI masking** (Unity Catalog / Lake Formation, HIPAA) | `src/governance.py` |
+| 7 | **Palantir Foundry** (Ontology, Pipeline Builder) | `foundry/ontology.yaml` |
+| 8 | **Terraform** IaC (Databricks, S3, MSK, Glue, DMS) | `infra/main.tf` |
+| 9 | **Tuning** — partitioning, Delta OPTIMIZE, 99.99% availability | `src/tuning.py` |
+
+**Live run — all points in one demo:**
+
+![HCA demo run](assets/hca-run.png)
+
+**HL7/FHIR streaming — sub-minute ingestion:**
+
+![HCA streaming](assets/hca-streaming.png)
+
+`PySpark` · `Delta / Medallion` · `Structured Streaming` · `CDC` · `Patient 360` · `Governance / PHI masking` · `Palantir Foundry` · `Terraform` · `pytest`
+
+### 🥈 Real-Time Fraud Detection (Spark Structured Streaming) — *mirrors First Citizens*
+Streaming scorer flagging every transaction **ALLOW / REVIEW / BLOCK** in real time, micro-batch by micro-batch. · `Spark Streaming · foreachBatch · pytest`
+
+### 🥉 Retail Analytics (PySpark) — *mirrors Costco*
+100K rows across 40 warehouses → KPIs, top-product ranking, 7-day moving average. · `PySpark · Window functions · pytest`
+
+### 🏅 Insurance Reconciliation (PySpark) — *mirrors Brown & Brown*
+Reconciles policy ↔ billing ↔ claims and detects **premium leakage**. · `PySpark · multi-source joins · pytest`
+
+### 🏅 Telecom Billing & Churn Warehouse (SQL) — *mirrors Cox*
+Star schema → **ARPU, churn & retention** marts. · `SQL · Star Schema · Dimensional Modeling`
+
 
 <hr/>
 
